@@ -286,14 +286,14 @@ func TestAccResourceOktaAuthenticator_custom_app_crud(t *testing.T) {
 func TestAccResourceOktaAuthenticator_webauthn_crud(t *testing.T) {
 	config := `
 resource "okta_authenticator" "webauthn" {
-	name   = "WebAuthn"
+	name   = "Security Key or Biometric"
 	key    = "webauthn"
 	status = "INACTIVE"
 }
 `
 	updatedConfig := `
 resource "okta_authenticator" "webauthn" {
-	name   = "WebAuthn"
+	name   = ""Security Key or Biometric""
 	key    = "webauthn"
 	status = "ACTIVE"
 }
@@ -312,7 +312,7 @@ resource "okta_authenticator" "webauthn" {
 					resource.TestCheckResourceAttr(resourceName, "status", idaas.StatusInactive),
 					resource.TestCheckResourceAttr(resourceName, "type", "security_key"),
 					resource.TestCheckResourceAttr(resourceName, "key", "webauthn"),
-					resource.TestCheckResourceAttr(resourceName, "name", "WebAuthn"),
+					resource.TestCheckResourceAttr(resourceName, "name", "Security Key or Biometric"),
 				),
 			},
 			{
@@ -321,7 +321,7 @@ resource "okta_authenticator" "webauthn" {
 					resource.TestCheckResourceAttr(resourceName, "status", idaas.StatusActive),
 					resource.TestCheckResourceAttr(resourceName, "type", "security_key"),
 					resource.TestCheckResourceAttr(resourceName, "key", "webauthn"),
-					resource.TestCheckResourceAttr(resourceName, "name", "WebAuthn"),
+					resource.TestCheckResourceAttr(resourceName, "name", "Security Key or Biometric"),
 				),
 			},
 		},
