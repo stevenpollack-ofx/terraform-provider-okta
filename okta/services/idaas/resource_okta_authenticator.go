@@ -399,23 +399,26 @@ func buildOTP(d *schema.ResourceData) (*sdk.OTP, error) {
 }
 
 func validateAuthenticator(d *schema.ResourceData) error {
-	typ := d.Get("type").(string)
-	if typ == "security_key" {
-		if d.Get("key").(string) != "custom_otp" {
-			h := d.Get("provider_hostname").(string)
-			_, pok := d.GetOk("provider_auth_port")
-			s := d.Get("provider_shared_secret").(string)
-			templ := d.Get("provider_user_name_template").(string)
-			if h == "" || s == "" || templ == "" || !pok {
-				return fmt.Errorf("for authenticator type '%s' fields 'provider_hostname', "+
-					"'provider_auth_port', 'provider_shared_secret' and 'provider_user_name_template' are required", typ)
-			}
-		} else {
-			return fmt.Errorf("custom_otp is not updatable")
+	key := d.Get("key").(string)
+	
+	// Only onprem_mfa requires RADIUS configuration
+	if key == "onprem_mfa" {
+		h := d.Get("provider_hostname").(string)
+		_, pok := d.GetOk("provider_auth_port")
+		s := d.Get("provider_shared_secret").(string)
+		templ := d.Get("provider_user_name_template").(string)
+		if h == "" || s == "" || templ == "" || !pok {
+			return fmt.Errorf("for authenticator key 'onprem_mfa' fields 'provider_hostname', "+
+				"'provider_auth_port', 'provider_shared_secret' and 'provider_user_name_template' are required")
 		}
 	}
+	
+	// custom_otp cannot be updated
+	if key == "custom_otp" && d.Id() != "" {
+		return fmt.Errorf("custom_otp is not updatable")
+	}
 
-	typ = d.Get("provider_type").(string)
+	typ := d.Get("provider_type").(string)
 	if typ == "DUO" {
 		h := d.Get("provider_host").(string)
 		sk := d.Get("provider_secret_key").(string)
