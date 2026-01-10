@@ -293,7 +293,7 @@ resource "okta_authenticator" "webauthn" {
 `
 	updatedConfig := `
 resource "okta_authenticator" "webauthn" {
-	name   = ""Security Key or Biometric""
+	name   = "Security Key or Biometric"
 	key    = "webauthn"
 	status = "ACTIVE"
 }
